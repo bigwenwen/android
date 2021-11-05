@@ -1,0 +1,105 @@
+设置表头head.xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    >
+
+        <TextView
+            android:id="@+id/text1"
+            android:layout_width="143dp"
+            android:layout_height="32dp"
+            android:layout_margin="25dp"
+            android:text="排名" />
+
+        <RelativeLayout
+            android:layout_width="180dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginRight="70dp"
+            android:gravity="right">
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="85dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="70dp"
+                android:gravity="right"
+                android:text="搜索指数" />
+        </RelativeLayout>
+</LinearLayout>
+
+设置列表项activity_ma.xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MaActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/s1"
+            android:layout_width="29dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="25dp"
+            android:background="@color/purple_500"
+            android:textSize="25px">
+        </TextView>
+
+        <TextView
+            android:id="@+id/s2"
+            android:layout_width="64dp"
+            android:layout_height="match_parent"
+            android:textSize="25px"
+            android:background="@color/purple_200">
+        </TextView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/s3"
+                android:layout_width="89dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="40dp"
+                android:textSize="20px"
+                android:background="@color/purple_200"
+                android:gravity="right">
+            </TextView>
+
+            <TextView
+                android:id="@+id/s4"
+                android:layout_width="25dp"
+                android:layout_height="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:background="@color/purple_500"
+                android:gravity="right">
+            </TextView>
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
+
+设置列表activity_main.xml
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+ </LinearLayout>
