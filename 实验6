@@ -1,0 +1,307 @@
+//新闻的实体类News
+
+public class News {
+    private String title;
+    private String content;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+}
+
+//news_item.xml 布局
+
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    android:ellipsize="end"
+    android:textSize="18sp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    />
+    
+    
+    //布局文件 news_content_frag.xml
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/visibility_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="invisible">
+        <TextView
+            android:id="@+id/news_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textSize="20sp"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000"/>
+
+        <TextView
+            android:id="@+id/news_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="15dp"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="#000"/>
+</RelativeLayout>
+
+//NewsContentFragment 类
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+
+public class NewsContentFragment extends Fragment {
+    private View view;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        view=inflater.inflate(R.layout.news_content_frag,container,false);
+        return view;
+    }
+    public void refresh(String newsTitle,String newsContent){
+        View visibilityLayout=view.findViewById(R.id.visibility_layout);
+        visibilityLayout.setVisibility(View.VISIBLE);
+        TextView newsTitleText=(TextView)view.findViewById(R.id.news_title);
+        TextView newsContentText=(TextView)view.findViewById(R.id.news_content);
+        newsTitleText.setText(newsTitle);
+        newsContentText.setText(newsContent);
+    }
+}
+
+//news_content.xml布局
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NewsContentActivity">
+
+    <fragment
+        android:id="@+id/news_content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.example.week11.NewsContentFragment"
+        />
+</LinearLayout>
+
+//NewsContentActivity类
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+public class NewsContentActivity extends AppCompatActivity {
+ public static void actionStart(Context context, String newsTitle, String newsContent){
+     Intent intent=new Intent(context,NewsContentActivity.class);
+     intent.putExtra("news_title",newsTitle);
+     intent.putExtra("news_content",newsContent);
+     context.startActivity(intent);
+ }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.news_content);
+        String newsTitle=getIntent().getStringExtra("news_title");
+        String newsContent=getIntent().getStringExtra("news_content");
+        NewsContentFragment newsContentFragment=(NewsContentFragment) getSupportFragmentManager().findFragmentById(R.id.news_content_fragment);
+        newsContentFragment.refresh(newsTitle,newsContent);
+    }
+}
+
+//news_title_frag.xml布局
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+    android:id="@+id/news_title_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
+</LinearLayout>
+
+//NewsTitleFragment 类
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class NewsTitleFragment extends Fragment {
+    private boolean isTwoPane;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view=inflater.inflate(R.layout.news_title_frag,container,false);
+        RecyclerView newsTitleRecyclerView=(RecyclerView) view.findViewById(R.id.news_title_recycler_view);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
+        newsTitleRecyclerView.setLayoutManager(layoutManager);
+        NewsAdapter adapter=new NewsAdapter(getNews());
+        newsTitleRecyclerView.setAdapter(adapter);
+        return view;
+    }
+
+    private List<News> getNews(){
+        List<News> newsList=new ArrayList<>();
+        for (int i=1;i<=50;i++){
+            News news=new News();
+            news.setTitle("This is news title"+i);
+            news.setContent(getRandomLengthContent("This is new content"+i+"."));
+            newsList.add(news);
+        }
+        return newsList;
+    }
+
+    private String getRandomLengthContent(String content){
+        Random random=new Random();
+        int length=random.nextInt(20)+1;
+        StringBuilder builder=new StringBuilder();
+        for(int i=0;i<length;i++){
+            builder.append(content);
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        if(getActivity().findViewById(R.id.news_content_layout) != null){
+            isTwoPane=true;
+        }else{
+            isTwoPane=false;
+        }
+    }
+
+    class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
+        private List<News> mNewsList;
+        class ViewHolder extends RecyclerView.ViewHolder{
+            TextView newsTitleText;
+            public ViewHolder(View view){
+                super(view);
+                newsTitleText=(TextView)view.findViewById(R.id.news_title);
+            }
+        }
+        public NewsAdapter(List<News> newsList){
+            mNewsList=newsList;
+        }
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.news_item,parent,false);
+            final ViewHolder holder=new ViewHolder(view);
+            view.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    News news=mNewsList.get(holder.getAdapterPosition());
+                    if(isTwoPane){
+                        NewsContentFragment newsContentFragment=(NewsContentFragment) getFragmentManager().findFragmentById(R.id.news_content_fragment);
+                        newsContentFragment.refresh(news.getTitle(),news.getContent());
+                    }else{
+                        NewsContentActivity.actionStart(getActivity(),news.getTitle(),news.getContent());
+                    }
+                }
+            });
+            return holder;
+        }
+        @Override
+        public void onBindViewHolder(ViewHolder holder,int position){
+            News news =mNewsList.get(position);
+            holder.newsTitleText.setText(news.getTitle());
+        }
+        @Override
+        public int getItemCount(){
+            return mNewsList.size();
+        }
+    }
+}
+
+//activity_main.xml布局
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/news_title_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <fragment
+        android:id="@+id/news_title_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.example.week11.NewsTitleFragment"/>
+
+</FrameLayout>
+
+//layout-sw600dp文件夹下的 activity_main.xml 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/news_title_fragment"
+        android:name="com.example.week11.NewsTitleFragment"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+    <FrameLayout
+        android:id="@+id/news_content_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="3">
+        <fragment
+            android:id="@+id/news_content_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.example.week11.NewsContentFragment"/>
+
+    </FrameLayout>
+</LinearLayout>
+
+
+
